@@ -1,0 +1,66 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Subnet Calculator — Mohammed Fahim</title><link rel="stylesheet" href="styles.css"/></head><body>
+<header class="nav"><div class="container nav-inner">
+<a href="index.html" class="logo">mohammed-fahim:~$</a>
+<nav class="nav-links" id="navLinks">
+<a href="index.html" class="nav-link">~/home</a><a href="about.html" class="nav-link">~/about</a><a href="work.html" class="nav-link active">~/work</a><a href="blog.html" class="nav-link">~/blog</a><a href="guides.html" class="nav-link">~/guides</a><a href="uses.html" class="nav-link">~/uses</a><a href="now.html" class="nav-link">~/now</a><a href="contact.html" class="nav-link">~/contact</a><a href="resume.pdf" class="nav-link">Resume ↓</a>
+</nav><button class="hamburger" id="hamburger">☰</button></div></header>
+<main class="container section article">
+<p class="muted"><a href="work.html">~/work</a> / subnet-calculator · 4 min read · tool</p>
+<h1>Network Subnetting Calculator Tool</h1>
+<p class="muted">Built because I was tired of doing /26 math on a billing counter while someone waited.</p>
+
+<h2>The situation</h2>
+<p>Every VLAN job = subnet math. How many hosts in /27? What's the mask for 4 subnets? I kept opening random websites with 10 popups. So I made a tiny offline page: type IP + CIDR, get network, broadcast, mask, hosts, and equal subnets. No ads, no login, works without internet — important in a basement server room.</p>
+<p>Joke: my first version said /32 has 1 host and -1 usable. Networking humor. Fixed now.</p>
+
+<h2>Network Topology</h2>
+<p>None — it's a browser tool. But here's the logic:</p>
+<pre class="topo">[Input: 192.168.10.0/24 + split into 4]
+   -> mask 255.255.255.192 (/26)
+   -> 4 subnets x 62 usable hosts
+   -> lists network / first / last / broadcast per subnet</pre>
+
+<h2>Hardware Used</h2>
+<ul>
+<li>HTML + CSS + JavaScript, single page, runs offline</li>
+<li>Hosted as <code>subnet.html</code> on this site — zero cost</li>
+</ul>
+
+<h2>Try it (live)</h2>
+<div class="card">
+<label class="muted">IP + CIDR</label><br/>
+<input id="subIp" value="192.168.10.0/26" style="width:100%;margin:.5rem 0;padding:.6rem;background:#05090d;border:1px solid var(--border);border-radius:8px;color:var(--text);font:inherit" />
+<button class="btn btn-primary" id="subBtn" type="button">Calculate</button>
+<pre class="topo" id="subOut" style="margin-top:1rem">Output appears here...</pre>
+</div>
+
+<h2>Results</h2>
+<ul>
+<li>Used in 2 VLAN jobs — subnet plan in 30 seconds, pasted into the rack sheet.</li>
+<li>Junior techs use it instead of calling me. Peace.</li>
+<li>Works offline — tested with Wi-Fi off, because of course I did.</li>
+<li>Code is ~60 lines, readable, no framework. Easy to fix when I break it.</li>
+</ul>
+<p><a href="work.html">← Back to ~/work</a></p>
+</main>
+<footer class="footer"><div class="container"><span>© 2026 Mohammed Fahim</span><span>~/work/subnet</span></div></footer>
+<script src="script.js"></script>
+<script>
+const $ = (id) => document.getElementById(id);
+function ipToInt(ip){ return ip.split('.').reduce((a,o)=> (a<<8)+parseInt(o),0)>>>0; }
+function intToIp(n){ return [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255].join('.'); }
+$('subBtn').addEventListener('click', () => {
+  try {
+    const [ipStr, cidrStr] = $('subIp').value.trim().split('/');
+    const cidr = parseInt(cidrStr);
+    if (!ipStr || isNaN(cidr) || cidr < 0 || cidr > 32) throw 0;
+    const ip = ipToInt(ipStr);
+    const mask = cidr === 0 ? 0 : (0xFFFFFFFF << (32 - cidr)) >>> 0;
+    const net = (ip & mask) >>> 0, bcast = (net | (~mask >>> 0)) >>> 0;
+    const hosts = cidr >= 31 ? (cidr === 32 ? 1 : 2) : Math.pow(2, 32 - cidr) - 2;
+    $('subOut').textContent =
+`Network:   ${intToIp(net)}/${cidr}\nMask:      ${intToIp(mask)}\nBroadcast: ${intToIp(bcast)}\nUsable hosts: ${hosts}\nFirst: ${intToIp(net+1)}  Last: ${intToIp(bcast-1)}`;
+  } catch { $('subOut').textContent = 'Use format like 192.168.10.0/26'; }
+});
+</script>
+</body></html>

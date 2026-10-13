@@ -1,0 +1,48 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>IP CCTV & NVR — Mohammed Fahim</title><link rel="stylesheet" href="styles.css"/></head><body>
+<header class="nav"><div class="container nav-inner">
+<a href="index.html" class="logo">mohammed-fahim:~$</a>
+<nav class="nav-links" id="navLinks">
+<a href="index.html" class="nav-link">~/home</a><a href="about.html" class="nav-link">~/about</a><a href="work.html" class="nav-link active">~/work</a><a href="blog.html" class="nav-link">~/blog</a><a href="guides.html" class="nav-link">~/guides</a><a href="uses.html" class="nav-link">~/uses</a><a href="now.html" class="nav-link">~/now</a><a href="contact.html" class="nav-link">~/contact</a><a href="resume.pdf" class="nav-link">Resume ↓</a>
+</nav><button class="hamburger" id="hamburger">☰</button></div></header>
+<main class="container section article">
+<p class="muted"><a href="work.html">~/work</a> / ip-cctv-nvr · 5 min read · surveillance</p>
+<h1>IP CCTV &amp; NVR Deployment Project</h1>
+<p class="muted">16 cameras, one shop + warehouse, and an owner tired of "camera not recording, sir".</p>
+
+<h2>The situation</h2>
+<p>Old analog setup: blurry DVR, 4 cameras dead, cables chewed by persons unknown (rats, probably). Owner wanted: front door faces clear, billing counter readable, godown covered, and phone viewing because he travels. Budget: average. Not "AI analytics", just "show me who took the parcel".</p>
+<p>Funny part: during survey I found one camera pointed lovingly at a wall for two years. Nobody noticed. We fixed that.</p>
+
+<h2>Network Topology</h2>
+<pre class="topo">[16x IP Cameras] --Cat6--> [16-port PoE Switch]
+                                   |
+                              [16-ch NVR + 4TB]
+                                |         |
+                           [Monitor]   [Router -> Phone App (P2P)]</pre>
+<p>Cameras on their own subnet 192.168.50.0/24, no internet directly — only NVR talks out via P2P cloud. Keeps random cameras off the office LAN and stops them hogging DHCP.</p>
+
+<h2>Hardware Used</h2>
+<ul>
+<li>16× 4MP PoE IP cameras (dome indoors, bullet outdoors, IP66)</li>
+<li>1× 16-channel NVR + 4TB surveillance HDD (≈15 days continuous)</li>
+<li>1× 16-port PoE switch (120W budget — checked, not guessed)</li>
+<li>Cat6 runs, PVC conduit outdoors, small UPS for NVR + switch + router</li>
+<li>32" monitor at cash desk for live view</li>
+</ul>
+
+<h2>What I actually did</h2>
+<p><strong>Day 1 — survey:</strong> walked with owner, marked 16 spots with masking tape. Argued politely against "one camera can see everything" — it can't. <strong>Day 2 — cabling:</strong> 400m of Cat6, labelled both ends (C1..C16, because future-me forgets). PoE distance check — longest run 72m, fine. <strong>Day 3 — mount + focus:</strong> height ~3m indoors, angled to catch faces not tops of heads. Set motion zones to skip the ceiling fan — otherwise 500 alerts of "motion detected: fan". <strong>Day 4 — NVR:</strong> continuous + motion record, overwrite oldest, user accounts (owner admin, staff view-only), phone app QR setup, UPS test by literally pulling the plug.</p>
+
+<h2>Results</h2>
+<ul>
+<li>16/16 cameras online, 15-day retention verified.</li>
+<li>Billing counter text readable on playback — owner tested with a ₹10 note. Passed.</li>
+<li>Phone viewing works on mobile data, no port forwarding (P2P).</li>
+<li>Power cut test: UPS holds NVR + switch + router ~25 min — enough for short cuts.</li>
+<li>One-page sheet left behind: NVR IP, passwords sealed envelope, how to export clip to USB.</li>
+</ul>
+<p class="muted">Honest note: night IR range is ~20m, not cinema quality. Told the owner upfront. No complaints since — that's the real metric.</p>
+<p><a href="work.html">← Back to ~/work</a></p>
+</main>
+<footer class="footer"><div class="container"><span>© 2026 Mohammed Fahim</span><span>~/work/cctv</span></div></footer>
+<script src="script.js"></script></body></html>

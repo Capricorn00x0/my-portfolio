@@ -1,0 +1,54 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Multi-VLAN Setup — Mohammed Fahim</title><link rel="stylesheet" href="styles.css"/></head><body>
+<header class="nav"><div class="container nav-inner">
+<a href="index.html" class="logo">mohammed-fahim:~$</a>
+<nav class="nav-links" id="navLinks">
+<a href="index.html" class="nav-link">~/home</a><a href="about.html" class="nav-link">~/about</a><a href="work.html" class="nav-link active">~/work</a><a href="blog.html" class="nav-link">~/blog</a><a href="guides.html" class="nav-link">~/guides</a><a href="uses.html" class="nav-link">~/uses</a><a href="now.html" class="nav-link">~/now</a><a href="contact.html" class="nav-link">~/contact</a><a href="resume.pdf" class="nav-link">Resume ↓</a>
+</nav><button class="hamburger" id="hamburger">☰</button></div></header>
+<main class="container section article">
+<p class="muted"><a href="work.html">~/work</a> / multi-vlan-setup · 6 min read · switching</p>
+<h1>Enterprise Multi-VLAN Network Setup</h1>
+<p class="muted">One office, three floors, everybody on 192.168.1.x and everybody shouting. Printers getting ARP storms, guests on the same LAN as Accounts. Classic.</p>
+
+<h2>The situation</h2>
+<p>Small company, about 60 devices. One flat network. The Accounts PC shared a broadcast domain with the guest Wi-Fi — yes, really. Every time someone plugged a cheap switch looped back on itself, the whole floor went down and I got the call. My job: split it up without buying new routers, and without breaking anything on a working weekday.</p>
+<p>Humor break: the "server room" was a store room with a mop bucket next to the rack. I moved the bucket first. Priorities.</p>
+
+<h2>Network Topology</h2>
+<pre class="topo">[ISP Router]
+    | (trunk, VLANs 10,20,30,40)
+[Core L2 Switch - Ground Floor]
+    |-- trunk -- [Floor 1 Switch] -- Staff PCs (VLAN 10)
+    |-- trunk -- [Floor 2 Switch] -- Accounts (VLAN 20) + Printers (VLAN 40)
+    +-- access -- Guest AP (VLAN 30, isolated)</pre>
+<table>
+<tr><th>VLAN</th><th>Name</th><th>Subnet</th><th>Purpose</th></tr>
+<tr><td>10</td><td>Staff</td><td>192.168.10.0/24</td><td>Office PCs, Wi-Fi staff SSID</td></tr>
+<tr><td>20</td><td>Accounts</td><td>192.168.20.0/24</td><td>Tally / billing PCs only</td></tr>
+<tr><td>30</td><td>Guest</td><td>192.168.30.0/24</td><td>Guest Wi-Fi, internet only</td></tr>
+<tr><td>40</td><td>Printers</td><td>192.168.40.0/24</td><td>Printers + scanner, shared controlled</td></tr>
+</table>
+<p>Inter-VLAN routing done on the existing router (router-on-a-stick, one trunk port, sub-interfaces). ACLs: Guest → internet only, no LAN. Accounts → Staff printers allowed, Staff → Accounts blocked except gateway.</p>
+
+<h2>Hardware Used</h2>
+<ul>
+<li>Existing ISP router (reused, added sub-interfaces — no new purchase)</li>
+<li>3× managed L2 switches (VLAN + trunk support)</li>
+<li>Patch panels, Cat6 re-labelling, cable ties (so many cable ties)</li>
+<li>2× access points with multi-SSID</li>
+</ul>
+
+<h2>What I actually did</h2>
+<p><strong>Friday evening:</strong> backup of all switch configs to a USB stick and my laptop. Drew the VLAN map on paper because Packet Tracer lies and paper doesn't. <strong>Saturday:</strong> created VLANs, set trunk ports, moved one floor at a time, tested ping + printing after each floor. The Accounts printer "disappeared" for 20 minutes — turned out it had a hardcoded gateway from 2019. Fixed, felt like a hero. <strong>Sunday:</strong> guest portal test with 10 phones, DHCP scope check, labelled every port.</p>
+
+<h2>Results</h2>
+<ul>
+<li>Broadcast domain split from ~60 devices into 4 small ones — random slowdowns stopped.</li>
+<li>Guest network fully isolated from Accounts. Owner stopped worrying.</li>
+<li>Loop on Floor 1 now kills only Floor 1, not the whole building. Progress.</li>
+<li>Documentation: one-page IP + VLAN sheet taped inside the rack. Future-me says thanks.</li>
+</ul>
+<p class="muted">Not hyped: still single router, no redundancy. If it dies, we cry. Phase 2 would be a second link — for now, config backup + spare switch on shelf.</p>
+<p><a href="work.html">← Back to ~/work</a></p>
+</main>
+<footer class="footer"><div class="container"><span>© 2026 Mohammed Fahim</span><span>~/work/multi-vlan</span></div></footer>
+<script src="script.js"></script></body></html>
