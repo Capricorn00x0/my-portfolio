@@ -87,3 +87,8 @@ body.leaving { opacity: 0; }
   .reveal { opacity: 1; transform: none; transition: none; }
   .metric, .card, .read-more { transition: none; }
 }
+
+/* Boot overlay */
+.boot { position: fixed; inset: 0; z-index: 100; background: #05090d; display: flex; align-items: center; justify-content: center; transition: opacity .3s ease; cursor: pointer; }
+.boot.done { opacity: 0; pointer-events: none; }
+.boot pre { color: var(--accent); font: inherit; padding: 1rem; }

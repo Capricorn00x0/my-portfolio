@@ -383,7 +383,57 @@ if (typeof window !== 'undefined' && window.addEventListener) window.addEventLis
   els.forEach((el) => io.observe(el));
 })();
 
-// Contact form (contact page)
+// ---------- Site life: boot, count-ups ----------
+// Boot overlay (home only, once per session, click to skip).
+(function () {
+  const boot = document.getElementById('boot');
+  if (!boot) return;
+  const log = document.getElementById('bootLog');
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let seen = false;
+  try { seen = sessionStorage.getItem('booted') === '1'; } catch (_) {}
+  if (reduce || seen || !log) { boot.remove(); return; }
+  boot.hidden = false;
+  const lines = ['fahim-node v1.0 — secure boot', '[ok] vlan tables loaded', '[ok] 16 cameras online', '[ok] terminal ready — welcome'];
+  let i = 0;
+  const finish = () => {
+    boot.classList.add('done');
+    try { sessionStorage.setItem('booted', '1'); } catch (_) {}
+    setTimeout(() => boot.remove(), 350);
+  };
+  const t = setInterval(() => {
+    if (i >= lines.length) { clearInterval(t); finish(); return; }
+    log.textContent += (i ? '\n' : '') + lines[i++];
+  }, 140);
+  boot.addEventListener('click', () => { clearInterval(t); finish(); });
+  setTimeout(() => { if (document.getElementById('boot')) finish(); }, 4000);
+})();
+
+// Count-up metrics.
+(function () {
+  const els = document.querySelectorAll('[data-count]');
+  if (!els.length) return;
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const run = (el) => {
+    const target = parseInt(el.getAttribute('data-count'), 10);
+    if (!Number.isFinite(target)) return;
+    if (reduce || !window.requestAnimationFrame) { el.textContent = String(target); return; }
+    const t0 = performance.now(), dur = 900;
+    const frame = (t) => {
+      const k = Math.min(1, (t - t0) / dur);
+      el.textContent = String(Math.round(target * (1 - Math.pow(1 - k, 3))));
+      if (k < 1) requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+  };
+  if (!('IntersectionObserver' in window)) { els.forEach(run); return; }
+  const io = new IntersectionObserver((es) => es.forEach((en) => { if (en.isIntersecting) { run(en.target); io.unobserve(en.target); } }), { threshold: 0.4 });
+  els.forEach((el) => io.observe(el));
+})();
+
+// Contact form (contact page). Set FORMSPREE_ID to make it really send
+// (free at formspree.io, e.g. 'abcdwxyz'); empty = demo mode.
+const FORMSPREE_ID = '';
 const form = document.getElementById('contactForm');
 if (form) {
   form.addEventListener('submit', (e) => {
@@ -398,7 +448,15 @@ if (form) {
     if (!name || !email || !message) { status.textContent = 'Please fill in all fields.'; return; }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { status.textContent = 'Enter a valid email.'; return; }
     if (looksLikeCode(name) || looksLikeCode(email) || looksLikeCode(message)) { status.textContent = 'Plain text only — links, tags and code are not accepted.'; return; }
-    status.textContent = 'Thanks! Message noted (demo form).';
-    form.reset();
+    if (!FORMSPREE_ID) { status.textContent = 'Thanks! Message noted (demo form).'; form.reset(); return; }
+    status.textContent = 'Sending…';
+    fetch('https://formspree.io/f/' + FORMSPREE_ID, {
+      method: 'POST',
+      headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, message }),
+    }).then((r) => {
+      if (r.ok) { status.textContent = 'Sent! I will get back to you.'; form.reset(); }
+      else status.textContent = 'Send failed — try email instead.';
+    }).catch(() => { status.textContent = 'Network error — try email instead.' });
   });
 }
