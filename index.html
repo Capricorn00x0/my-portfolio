@@ -11,8 +11,8 @@
 <a href="index.html" class="logo">mohammed-fahim:~$</a>
 <nav class="nav-links" id="navLinks">
 <a href="index.html" class="nav-link active">~/home</a>
-<a href="about.html" class="nav-link">~/about</a>
 <a href="work.html" class="nav-link">~/work</a>
+<a href="about.html" class="nav-link">~/about</a>
 <a href="blog.html" class="nav-link">~/blog</a>
 <a href="guides.html" class="nav-link">~/guides</a>
 <a href="uses.html" class="nav-link">~/uses</a>
@@ -29,15 +29,83 @@
 <p class="hero-sub">Network Support &amp; IT Infrastructure Engineer. VLANs, CCTV, Wi-Fi, cabling, desktops, printers — the unglamorous stuff that has to just work on Monday morning.</p>
 <p><a class="btn btn-primary" href="work.html">View Case Studies</a><a class="btn btn-outline" href="contact.html">Email me</a></p>
 <div class="metrics">
-<div class="metric"><strong>3 floors, 1 weekend</strong><span>VLAN segmentation without breaking payroll day</span></div>
-<div class="metric"><strong>16 cameras, 0 blind spots</strong><span>IP CCTV + NVR, remote viewing working</span></div>
-<div class="metric"><strong>200+ tickets closed</strong><span>Support, cabling, Wi-Fi, printers, patience</span></div>
+<a class="metric" href="#card-vlan"><strong>3 floors, 1 weekend</strong><span>VLAN segmentation without breaking payroll day</span></a>
+<a class="metric" href="#card-cctv"><strong>16 cameras, 0 blind spots</strong><span>IP CCTV + NVR, remote viewing working</span></a>
+<a class="metric" href="#section-about"><strong>200+ tickets closed</strong><span>Support, cabling, Wi-Fi, printers, patience</span></a>
+</div>
+</section>
+<section id="section-work" class="section reveal">
+<h2 class="section-title">~/work — highlights</h2>
+<p class="muted">Top case studies. Jump to a card, then read the full page.</p>
+<div class="card-grid">
+<article class="card" id="card-vlan">
+<p class="muted">case-study · vlan · switching</p>
+<h3>Enterprise Multi-VLAN Network Setup</h3>
+<p>Router-on-a-stick, 4 VLANs, 3 floors done over one weekend.</p>
+<p><a class="read-more" href="work-vlan.html">Read more →</a></p>
+</article>
+<article class="card" id="card-cctv">
+<p class="muted">case-study · cctv · nvr · poe</p>
+<h3>IP CCTV &amp; NVR Deployment</h3>
+<p>16 PoE cameras, 15-day retention, phone viewing for the owner.</p>
+<p><a class="read-more" href="work-cctv.html">Read more →</a></p>
+</article>
+<article class="card" id="card-subnet">
+<p class="muted">case-study · tool · subnetting</p>
+<h3>Subnetting Calculator Tool</h3>
+<p>Browser tool that answers “/26 how many hosts?” instantly.</p>
+<p><a class="read-more" href="work-subnet.html">Read more →</a></p>
+</article>
+</div>
+<p><a class="read-more" href="work.html">Continue to ~/work →</a></p>
+</section>
+<section id="section-pages" class="section reveal">
+<h2 class="section-title">~/explore — everything on one page</h2>
+<p class="muted">Every section below. Pick a card, continue to the full page.</p>
+<div class="card-grid">
+<article class="card" id="section-about">
+<p class="muted">~/about</p>
+<h3>About</h3>
+<p>Role, experience, certs, things broken and fixed.</p>
+<p><a class="read-more" href="about.html">Continue to page →</a></p>
+</article>
+<article class="card" id="section-blog">
+<p class="muted">~/blog</p>
+<h3>Terminal Logs</h3>
+<p>VLAN weekend, CCTV diary, subnet tool story.</p>
+<p><a class="read-more" href="blog.html">Continue to page →</a></p>
+</article>
+<article class="card" id="section-guides">
+<p class="muted">~/guides</p>
+<h3>Guides</h3>
+<p>Step-by-step networking how-tos (growing).</p>
+<p><a class="read-more" href="guides.html">Continue to page →</a></p>
+</article>
+<article class="card" id="section-uses">
+<p class="muted">~/uses</p>
+<h3>Uses</h3>
+<p>Infra, security, monitoring, and daily tooling.</p>
+<p><a class="read-more" href="uses.html">Continue to page →</a></p>
+</article>
+<article class="card" id="section-now">
+<p class="muted">~/now</p>
+<h3>Now</h3>
+<p>What I’m doing and learning right now.</p>
+<p><a class="read-more" href="now.html">Continue to page →</a></p>
+</article>
+<article class="card" id="section-contact">
+<p class="muted">~/contact</p>
+<h3>Contact</h3>
+<p>Email, LinkedIn/GitHub, and a message form.</p>
+<p><a class="read-more" href="contact.html">Continue to page →</a></p>
+</article>
 </div>
 </section>
 <section class="terminal">
 <div class="term-head">guest@fahim-node — type `help`</div>
-<div id="termOutput">Type "help" for available commands.</div>
-<div class="term-input-row"><span>$</span><input id="termInput" placeholder="help, about, work, contact..." autocomplete="off" /></div>
+<div id="termOutput">Type "help" for commands, "games" to play.</div>
+<pre id="gameScreen" class="game-screen" hidden></pre>
+<div class="term-input-row"><span>$</span><input id="termInput" placeholder="help, about, work, contact..." autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="120" aria-label="terminal command" /></div>
 </section>
 </main>
 <footer class="footer"><div class="container"><span>© 2026 Mohammed Fahim</span><span>[ok] fahim-node · static</span></div></footer>
