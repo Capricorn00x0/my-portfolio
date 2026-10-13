@@ -367,6 +367,11 @@ if (isHome) {
   });
 })();
 
+// Always land on top after (re)load — never resume mid-page.
+try { if (typeof history !== 'undefined' && 'scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (_) {}
+try { window.scrollTo(0, 0); } catch (_) {}
+if (typeof window !== 'undefined' && window.addEventListener) window.addEventListener('load', () => { try { window.scrollTo(0, 0); } catch (_) {} });
+
 // Scroll reveal for home cards/sections
 (function () {
   const els = document.querySelectorAll('.reveal');
