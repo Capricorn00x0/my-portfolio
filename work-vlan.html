@@ -6,12 +6,12 @@
 </nav><button class="hamburger" id="hamburger">☰</button></div></header>
 <main class="container section article">
 <p class="muted"><a href="work.html">~/work</a> / network-segmentation · 6 min read · switching</p>
-<h1>Network Segmentation Across a Three-Site Campus</h1>
-<p class="muted">Three main locations — A, B, and C — kilometers apart inside one big campus, all shouting on a single flat network. Broadcasts everywhere, stability nowhere. Fixed together with my Senior IT Engineer.</p>
+<h1>Network Segmentation Across a Three-Site Compound</h1>
+<p class="muted">Three main locations — A, B, and C — kilometers apart inside one big compound, all shouting on a single flat network. Broadcasts everywhere, stability nowhere. Fixed together with my Senior IT Engineer.</p>
 
 <h2>The situation</h2>
-<p>A large campus with three main locations, A, B, and C, kilometers apart. Each location is self-contained: main office, staff accommodation, warehouse, and a working factory with its machinery — plus Wi-Fi access points, cameras, and printers. All of it sat on one flat network. Broadcast traffic and congestion made the whole thing unstable: a problem in one location was everybody's problem.</p>
-<p>My Senior IT Engineer and I took this on together: split the campus into isolated segments so each location stands on its own — without breaking the locations still running on the old network during the rollout. Lab tested first, because a live campus does not forgive guesswork.</p>
+<p>A large compound with three main locations, A, B, and C, kilometers apart. Each location is self-contained: main office, staff accommodation, warehouse, and a working factory with its machinery — plus Wi-Fi access points, cameras, and printers. All of it sat on one flat network. Broadcast traffic and congestion made the whole thing unstable: a problem in one location was everybody's problem.</p>
+<p>My Senior IT Engineer and I took this on together: split the compound into isolated segments so each location stands on its own — without breaking the locations still running on the old network during the rollout. Lab tested first, because a live compound does not forgive guesswork.</p>
 
 <h2>Network Topology</h2>
 <pre class="topo">[FortiGate NGFW — routing + firewall policies]
@@ -43,7 +43,7 @@
 <h2>Results</h2>
 <ul>
 <li>Broadcast congestion gone — each location is its own quiet domain.</li>
-<li>A fault in one location stays in that location instead of taking down the campus.</li>
+<li>A fault in one location stays in that location instead of taking down the compound.</li>
 <li>Stable, secure, and fast: granular traffic control plus no cross-segment lateral movement.</li>
 <li>Documentation: one-page VLAN + IP sheet per location. Future-me says thanks.</li>
 </ul>
