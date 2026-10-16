@@ -14,20 +14,20 @@
 <p>Funny part: during survey I found one camera pointed lovingly at a wall for two years. Nobody noticed. We fixed that.</p>
 
 <h2>Network Topology</h2>
-<pre class="topo">[16x IP Cameras] --Cat6--> [16-port PoE Switch]
-                                   |
-                              [16-ch NVR + 4TB]
-                                |         |
-                           [Monitor]   [Router -> Phone App (P2P)]</pre>
-<p>Cameras on their own subnet 192.168.50.0/24, no internet directly — only NVR talks out via P2P cloud. Keeps random cameras off the office LAN and stops them hogging DHCP.</p>
+<pre class="topo">[16x IP Cameras] --Cat6--> [18-port PoE Switch: 16x PoE + uplink]
+                                              | (uplink, camera LAN)
+                                   [NVR LAN1]  [NVR LAN2] --> [Router -> Phone App (P2P)]
+                                        |
+                                  [Monitor: wall, cash desk]</pre>
+<p>Cameras on their own subnet 192.168.50.0/24, no internet directly — NVR LAN1 reaches the cameras through the switch uplink, NVR LAN2 talks out via P2P cloud. Keeps random cameras off the office LAN and stops them hogging DHCP. Port math: 16 PoE ports for cameras + 1 uplink for the NVR, 1 spare.</p>
 
 <h2>Hardware Used</h2>
 <ul>
 <li>16× 4MP PoE IP cameras (dome indoors, bullet outdoors, IP66)</li>
-<li>1× 16-channel NVR + 4TB surveillance HDD (≈15 days continuous)</li>
-<li>1× 16-port PoE switch (120W budget — checked, not guessed)</li>
+<li>1× 16-channel NVR + 4TB surveillance HDD</li>
+<li>1× 18-port PoE switch — 16 PoE for cameras + uplinks</li>
 <li>Cat6 runs, PVC conduit outdoors, small UPS for NVR + switch + router</li>
-<li>32" monitor at cash desk for live view</li>
+<li>32" monitor wall-mounted at cash desk for live view</li>
 </ul>
 
 <h2>What I actually did</h2>
