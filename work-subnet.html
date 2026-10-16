@@ -28,10 +28,10 @@
 
 <h2>Try it (live)</h2>
 <div class="card">
-<label class="muted">IP + CIDR</label><br/>
-<input id="subIp" value="192.168.10.0/26" style="width:100%;margin:.5rem 0;padding:.6rem;background:#05090d;border:1px solid var(--border);border-radius:8px;color:var(--text);font:inherit" />
-<div style="display:flex;gap:.5rem;flex-wrap:wrap;margin:.25rem 0">
-<select id="splitCount" style="padding:.6rem;background:#05090d;border:1px solid var(--border);border-radius:8px;color:var(--text);font:inherit">
+<label class="muted" for="subIp">IP + CIDR</label><br/>
+<input id="subIp" class="subnet-input" value="192.168.10.0/26" />
+<div class="subnet-row">
+<select id="splitCount" class="subnet-select">
 <option value="1">no split</option>
 <option value="2">split x2</option>
 <option value="4" selected>split x4</option>
@@ -40,8 +40,8 @@
 <button class="btn btn-primary" id="subBtn" type="button">Calculate</button>
 <button class="btn btn-outline" id="csvBtn" type="button">Copy CSV</button>
 </div>
-<pre class="topo" id="subOut" style="margin-top:1rem">Output appears here...</pre>
-<div id="splitWrap" style="overflow-x:auto"></div>
+<pre class="topo subnet-out" id="subOut">Output appears here...</pre>
+<div id="splitWrap" class="subnet-split"></div>
 </div>
 
 <h2>Results</h2>
@@ -55,91 +55,5 @@
 </main>
 <footer class="footer"><div class="container"><span>© 2026 Mohammed Fahim</span><span>~/work/subnet</span></div></footer>
 <script src="script.js"></script>
-<script>
-const $ = (id) => document.getElementById(id);
-function ipToInt(ip){
-  const parts = String(ip).trim().split('.');
-  if (parts.length !== 4) throw new Error('IP must have 4 octets like 192.168.10.0');
-  let n = 0;
-  for (const p of parts) {
-    if (!/^\d+$/.test(p)) throw new Error('Bad octet "' + p + '"');
-    const v = parseInt(p, 10);
-    if (v < 0 || v > 255) throw new Error('Octet ' + v + ' out of range 0-255');
-    n = (n << 8) + v;
-  }
-  return n >>> 0;
-}
-function intToIp(n){ n = n >>> 0; return [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255].join('.'); }
-function maskFromCidr(cidr){
-  if (!Number.isInteger(cidr) || cidr < 0 || cidr > 32) throw new Error('CIDR must be 0-32');
-  if (cidr === 0) return 0;
-  return (0xFFFFFFFF << (32 - cidr)) >>> 0;
-}
-function calcSubnet(ipStr, cidr){
-  const ip = ipToInt(ipStr);
-  const mask = maskFromCidr(cidr);
-  const net = (ip & mask) >>> 0, bcast = (net | (~mask >>> 0)) >>> 0;
-  const hosts = cidr >= 31 ? (cidr === 32 ? 1 : 2) : Math.pow(2, 32 - cidr) - 2;
-  const first = cidr === 32 ? intToIp(net) : intToIp((net + 1) >>> 0);
-  const last = cidr >= 31 ? intToIp(bcast) : intToIp((bcast - 1) >>> 0);
-  return { input: ipStr + '/' + cidr, network: intToIp(net) + '/' + cidr, mask: intToIp(mask), broadcast: intToIp(bcast), first, last, hosts, cidr };
-}
-function parseCidr(input){
-  const parts = String(input).trim().split('/');
-  if (parts.length !== 2) throw new Error('Use format like 192.168.10.0/26');
-  const cidr = parseInt(parts[1].trim(), 10);
-  if (!parts[0] || Number.isNaN(cidr)) throw new Error('Use format like 192.168.10.0/26');
-  ipToInt(parts[0].trim()); maskFromCidr(cidr);
-  return { ip: parts[0].trim(), cidr };
-}
-function splitSubnets(baseIp, baseCidr, count){
-  if (!Number.isInteger(count) || count < 1 || count > 8) throw new Error('Split count must be 1-8');
-  const bits = Math.ceil(Math.log2(count));
-  const newCidr = baseCidr + bits;
-  if (newCidr > 32) throw new Error('Cannot split /' + baseCidr + ' into ' + count + ' subnets');
-  const actual = Math.pow(2, bits);
-  const baseNet = ipToInt(calcSubnet(baseIp, baseCidr).network.split('/')[0]);
-  const size = Math.pow(2, 32 - newCidr);
-  const out = [];
-  for (let i = 0; i < actual; i++) {
-    const r = calcSubnet(intToIp((baseNet + i * size) >>> 0), newCidr);
-    r.index = i + 1;
-    out.push(r);
-  }
-  return out;
-}
-let lastSplit = [];
-function runSubnet(){
-  try {
-    const { ip, cidr } = parseCidr($('subIp').value);
-    const r = calcSubnet(ip, cidr);
-    $('subOut').textContent =
-`Network:      ${r.network}\nMask:         ${r.mask}\nBroadcast:    ${r.broadcast}\nUsable hosts: ${r.hosts}\nFirst: ${r.first}  Last: ${r.last}`;
-    const count = parseInt($('splitCount').value, 10);
-    if (count > 1) {
-      lastSplit = splitSubnets(ip, cidr, count);
-      $('splitWrap').innerHTML = '<table><thead><tr><th>#</th><th>Network</th><th>First</th><th>Last</th><th>Broadcast</th><th>Hosts</th></tr></thead><tbody>' +
-        lastSplit.map((p) => '<tr><td>' + p.index + '</td><td>' + p.network + '</td><td>' + p.first + '</td><td>' + p.last + '</td><td>' + p.broadcast + '</td><td>' + p.hosts + '</td></tr>').join('') +
-        '</tbody></table>';
-    } else { lastSplit = []; $('splitWrap').innerHTML = ''; }
-  } catch (e) { lastSplit = []; $('splitWrap').innerHTML = ''; $('subOut').textContent = (e && e.message) || 'Use format like 192.168.10.0/26'; }
-}
-$('subBtn').addEventListener('click', runSubnet);
-$('subIp').addEventListener('keydown', (e) => { if (e.key === 'Enter') runSubnet(); });
-$('splitCount').addEventListener('change', runSubnet);
-$('csvBtn').addEventListener('click', () => {
-  if (!lastSplit.length) { $('subOut').textContent += '\n(Calculate a split first to copy CSV)'; return; }
-  const csv = 'index,network,first,last,broadcast,hosts\n' + lastSplit.map((p) => [p.index, p.network, p.first, p.last, p.broadcast, p.hosts].join(',')).join('\n');
-  const done = () => { $('csvBtn').textContent = 'Copied ✓'; setTimeout(() => { $('csvBtn').textContent = 'Copy CSV'; }, 1500); };
-  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(csv).then(done).catch(() => fallbackCopy(csv, done));
-  else fallbackCopy(csv, done);
-});
-function fallbackCopy(text, done){
-  const ta = document.createElement('textarea');
-  ta.value = text; document.body.appendChild(ta); ta.select();
-  try { document.execCommand('copy'); done(); } catch { $('subOut').textContent += '\n(Copy blocked — select table manually)'; }
-  ta.remove();
-}
-runSubnet();
-</script>
+<script src="subnet-tool.js"></script>
 </body></html>

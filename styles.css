@@ -92,3 +92,10 @@ body.leaving { opacity: 0; }
 .boot { position: fixed; inset: 0; z-index: 100; background: #05090d; display: flex; align-items: center; justify-content: center; transition: opacity .3s ease; cursor: pointer; }
 .boot.done { opacity: 0; pointer-events: none; }
 .boot pre { color: var(--accent); font: inherit; padding: 1rem; }
+
+/* Subnet tool (external CSS: CSP style-src 'self' blocks inline styles) */
+.subnet-input { width: 100%; margin: .5rem 0; padding: .6rem; background: #05090d; border: 1px solid var(--border); border-radius: 8px; color: var(--text); font: inherit; }
+.subnet-row { display: flex; gap: .5rem; flex-wrap: wrap; margin: .25rem 0; }
+.subnet-select { padding: .6rem; background: #05090d; border: 1px solid var(--border); border-radius: 8px; color: var(--text); font: inherit; }
+.subnet-out { margin-top: 1rem; }
+.subnet-split { overflow-x: auto; }
