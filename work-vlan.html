@@ -1,54 +1,51 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Multi-VLAN Setup — Mohammed Fahim</title><meta name="description" content="Mohammed Fahim — Network Support & IT Infrastructure Engineer: VLANs, CCTV, Wi-Fi, cabling."/><meta name="theme-color" content="#0a0f14"/><meta property="og:type" content="website"/><meta property="og:title" content="Mohammed Fahim — Network Engineer"/><link rel="icon" href="favicon.svg"/><link rel="stylesheet" href="styles.css"/></head><body>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Network Segmentation — Mohammed Fahim</title><meta name="description" content="Mohammed Fahim — Network Support & IT Infrastructure Engineer: VLANs, CCTV, Wi-Fi, cabling."/><meta name="theme-color" content="#0a0f14"/><meta property="og:type" content="website"/><meta property="og:title" content="Mohammed Fahim — Network Engineer"/><link rel="icon" href="favicon.svg"/><link rel="stylesheet" href="styles.css"/></head><body>
 <header class="nav"><div class="container nav-inner">
 <a href="index.html" class="logo">mohammed-fahim:~$</a>
 <nav class="nav-links" id="navLinks">
 <a href="index.html" class="nav-link">~/home</a><a href="work.html" class="nav-link active">~/work</a><a href="about.html" class="nav-link">~/about</a><a href="blog.html" class="nav-link">~/blog</a><a href="guides.html" class="nav-link">~/guides</a><a href="uses.html" class="nav-link">~/uses</a><a href="now.html" class="nav-link">~/now</a><a href="contact.html" class="nav-link">~/contact</a><a href="resume.pdf" class="nav-link">Resume ↓</a>
 </nav><button class="hamburger" id="hamburger">☰</button></div></header>
 <main class="container section article">
-<p class="muted"><a href="work.html">~/work</a> / multi-vlan-setup · 6 min read · switching</p>
-<h1>Enterprise Multi-VLAN Network Setup</h1>
-<p class="muted">One office, three floors, everybody on 192.168.1.x and everybody shouting. Printers getting ARP storms, guests on the same LAN as Accounts. Classic.</p>
+<p class="muted"><a href="work.html">~/work</a> / network-segmentation · 6 min read · switching</p>
+<h1>Network Segmentation Across a Three-Office Compound</h1>
+<p class="muted">Three separate office locations inside one large compound, all shouting on a single flat network. Broadcasts everywhere, stability nowhere.</p>
 
 <h2>The situation</h2>
-<p>Small company, about 60 devices. One flat network. The Accounts PC shared a broadcast domain with the guest Wi-Fi — yes, really. Every time someone plugged a cheap switch looped back on itself, the whole floor went down and I got the call. My job: split it up without buying new routers, and without breaking anything on a working weekday.</p>
-<p>Humor break: the "server room" was a store room with a mop bucket next to the rack. I moved the bucket first. Priorities.</p>
+<p>A large compound with three physical office locations. Each location is self-contained: main office, staff accommodation, warehouse, and a working factory with its machinery — plus Wi-Fi access points, cameras, and printers. All of it sat on one flat network. Broadcast traffic and congestion made the whole thing unstable: a problem in one location was everybody's problem.</p>
+<p>My job: split the compound into isolated segments so each location stands on its own — without breaking the locations still running on the old network during the rollout. Lab tested first, because the compound does not forgive guesswork.</p>
 
 <h2>Network Topology</h2>
-<pre class="topo">[ISP Router]
-    | (trunk, VLANs 10,20,30,40)
-[Core L2 Switch - Ground Floor]
-    |-- trunk -- [Floor 1 Switch] -- Staff PCs (VLAN 10)
-    |-- trunk -- [Floor 2 Switch] -- Accounts (VLAN 20) + Printers (VLAN 40)
-    +-- access -- Guest AP (VLAN 30, isolated)</pre>
+<pre class="topo">[FortiGate NGFW — routing + firewall policies]
+    |-- Location 1 (VLAN 20) -- [L3 Switch] -- office PCs, APs, cameras, printers, machinery
+    |-- Location 2 (VLAN 30) -- [L3 Switch] -- office PCs, APs, cameras, printers, machinery
+    +-- Location 3 (VLAN 40) -- [L3 Switch] -- office PCs, APs, cameras, printers, machinery
+(each location: dedicated switch ports + segregated cabling, fully isolated)</pre>
 <table>
-<tr><th>VLAN</th><th>Name</th><th>Subnet</th><th>Purpose</th></tr>
-<tr><td>10</td><td>Staff</td><td>192.168.10.0/24</td><td>Office PCs, Wi-Fi staff SSID</td></tr>
-<tr><td>20</td><td>Accounts</td><td>192.168.20.0/24</td><td>Tally / billing PCs only</td></tr>
-<tr><td>30</td><td>Guest</td><td>192.168.30.0/24</td><td>Guest Wi-Fi, internet only</td></tr>
-<tr><td>40</td><td>Printers</td><td>192.168.40.0/24</td><td>Printers + scanner, shared controlled</td></tr>
+<tr><th>VLAN</th><th>Location</th><th>What's inside</th></tr>
+<tr><td>20</td><td>Location 1</td><td>Main office, accommodation, warehouse, factory + machinery, APs, cameras, printers</td></tr>
+<tr><td>30</td><td>Location 2</td><td>Main office, accommodation, warehouse, factory + machinery, APs, cameras, printers</td></tr>
+<tr><td>40</td><td>Location 3</td><td>Main office, accommodation, warehouse, factory + machinery, APs, cameras, printers</td></tr>
 </table>
-<p>Inter-VLAN routing done on the existing router (router-on-a-stick, one trunk port, sub-interfaces). ACLs: Guest → internet only, no LAN. Accounts → Staff printers allowed, Staff → Accounts blocked except gateway.</p>
+<p>Segments are fully isolated — no traffic between VLANs. Each location is its own broadcast and collision domain, enforced by FortiGate policies and per-location L3 switching.</p>
 
 <h2>Hardware Used</h2>
 <ul>
-<li>Existing ISP router (reused, added sub-interfaces — no new purchase)</li>
-<li>3× managed L2 switches (VLAN + trunk support)</li>
-<li>Patch panels, Cat6 re-labelling, cable ties (so many cable ties)</li>
-<li>2× access points with multi-SSID</li>
+<li>FortiGate Next-Generation Firewall (routing between segments + security policies)</li>
+<li>3× L3 switches — one main switch per location (VLANs, dedicated ports)</li>
+<li>Segregated physical cabling per location + re-labelled patch panels</li>
+<li>Wireless access points per location, printers and machinery on static IPs</li>
 </ul>
 
 <h2>What I actually did</h2>
-<p><strong>Friday evening:</strong> backup of all switch configs to a USB stick and my laptop. Drew the VLAN map on paper because Packet Tracer lies and paper doesn't. <strong>Saturday:</strong> created VLANs, set trunk ports, moved one floor at a time, tested ping + printing after each floor. The Accounts printer "disappeared" for 20 minutes — turned out it had a hardcoded gateway from 2019. Fixed, felt like a hero. <strong>Sunday:</strong> guest portal test with 10 phones, DHCP scope check, labelled every port.</p>
+<p><strong>Lab first (2 days):</strong> designed the segmentation, built it on a lab setup, planned the cutover order, and tested routing, policies, and failover behavior before touching anything live. <strong>Location 1:</strong> deployed VLAN 20 — configured the L3 switch, FortiGate routing and policies, access points, and static IPs for printers and machinery — then watched it for a full day for faults and load issues while Locations 2 and 3 stayed on the previous network, unaffected. <strong>Location 2:</strong> same cutover to VLAN 30, another day of watching for errors and load. <strong>Location 3:</strong> same cutover to VLAN 40. After the last watch period with zero issues, all three locations were on segmented, isolated networks.</p>
 
 <h2>Results</h2>
 <ul>
-<li>Broadcast domain split from ~60 devices into 4 small ones — random slowdowns stopped.</li>
-<li>Guest network fully isolated from Accounts. Owner stopped worrying.</li>
-<li>Loop on Floor 1 now kills only Floor 1, not the whole building. Progress.</li>
-<li>Documentation: one-page IP + VLAN sheet taped inside the rack. Future-me says thanks.</li>
+<li>Broadcast congestion gone — each location is its own quiet domain.</li>
+<li>A fault in one location stays in that location instead of taking down the compound.</li>
+<li>Stable, secure, and fast: granular traffic control plus no cross-segment lateral movement.</li>
+<li>Documentation: one-page VLAN + IP sheet per location. Future-me says thanks.</li>
 </ul>
-<p class="muted">Not hyped: still single router, no redundancy. If it dies, we cry. Phase 2 would be a second link — for now, config backup + spare switch on shelf.</p>
 <p><a href="work.html">← Back to ~/work</a></p>
 </main>
-<footer class="footer"><div class="container"><span>© 2026 Mohammed Fahim</span><span>~/work/multi-vlan</span></div></footer>
+<footer class="footer"><div class="container"><span>© 2026 Mohammed Fahim</span><span>~/work/segmentation</span></div></footer>
 <script src="script.js"></script></body></html>
