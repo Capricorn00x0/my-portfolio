@@ -6,42 +6,44 @@
 </nav><button class="hamburger" id="hamburger">☰</button></div></header>
 <main class="container section article">
 <p class="muted"><a href="work.html">~/work</a> / network-segmentation · 6 min read · switching</p>
-<h1>Network Segmentation Across a Three-Office Compound</h1>
-<p class="muted">Three separate office locations inside one large compound, all shouting on a single flat network. Broadcasts everywhere, stability nowhere.</p>
+<h1>Network Segmentation Across a Three-Site Campus</h1>
+<p class="muted">Three main locations — A, B, and C — kilometers apart inside one big campus, all shouting on a single flat network. Broadcasts everywhere, stability nowhere. Fixed together with my Senior IT Engineer.</p>
 
 <h2>The situation</h2>
-<p>A large compound with three physical office locations. Each location is self-contained: main office, staff accommodation, warehouse, and a working factory with its machinery — plus Wi-Fi access points, cameras, and printers. All of it sat on one flat network. Broadcast traffic and congestion made the whole thing unstable: a problem in one location was everybody's problem.</p>
-<p>My job: split the compound into isolated segments so each location stands on its own — without breaking the locations still running on the old network during the rollout. Lab tested first, because the compound does not forgive guesswork.</p>
+<p>A large campus with three main locations, A, B, and C, kilometers apart. Each location is self-contained: main office, staff accommodation, warehouse, and a working factory with its machinery — plus Wi-Fi access points, cameras, and printers. All of it sat on one flat network. Broadcast traffic and congestion made the whole thing unstable: a problem in one location was everybody's problem.</p>
+<p>My Senior IT Engineer and I took this on together: split the campus into isolated segments so each location stands on its own — without breaking the locations still running on the old network during the rollout. Lab tested first, because a live campus does not forgive guesswork.</p>
 
 <h2>Network Topology</h2>
 <pre class="topo">[FortiGate NGFW — routing + firewall policies]
-    |-- Location 1 (VLAN 20) -- [L3 Switch] -- office PCs, APs, cameras, printers, machinery
-    |-- Location 2 (VLAN 30) -- [L3 Switch] -- office PCs, APs, cameras, printers, machinery
-    +-- Location 3 (VLAN 40) -- [L3 Switch] -- office PCs, APs, cameras, printers, machinery
-(each location: dedicated switch ports + segregated cabling, fully isolated)</pre>
+    |-- fiber backbone (pre-existing, unchanged, km apart)
+    |-- Location A (VLAN 20) -- [media converter, pre-existing] -- [L3 Switch] -- office PCs, APs, cameras, printers, machinery
+    |-- Location B (VLAN 30) -- [media converter, pre-existing] -- [L3 Switch] -- office PCs, APs, cameras, printers, machinery
+    +-- Location C (VLAN 40) -- [media converter, pre-existing] -- [L3 Switch] -- office PCs, APs, cameras, printers, machinery
+(fiber splicing + fiber-to-ethernet at endpoints already existed — we changed the firewall side and added L3 switches; each location fully isolated)</pre>
 <table>
 <tr><th>VLAN</th><th>Location</th><th>What's inside</th></tr>
-<tr><td>20</td><td>Location 1</td><td>Main office, accommodation, warehouse, factory + machinery, APs, cameras, printers</td></tr>
-<tr><td>30</td><td>Location 2</td><td>Main office, accommodation, warehouse, factory + machinery, APs, cameras, printers</td></tr>
-<tr><td>40</td><td>Location 3</td><td>Main office, accommodation, warehouse, factory + machinery, APs, cameras, printers</td></tr>
+<tr><td>20</td><td>Location A</td><td>Main office, accommodation, warehouse, factory + machinery, APs, cameras, printers</td></tr>
+<tr><td>30</td><td>Location B</td><td>Main office, accommodation, warehouse, factory + machinery, APs, cameras, printers</td></tr>
+<tr><td>40</td><td>Location C</td><td>Main office, accommodation, warehouse, factory + machinery, APs, cameras, printers</td></tr>
 </table>
 <p>Segments are fully isolated — no traffic between VLANs. Each location is its own broadcast and collision domain, enforced by FortiGate policies and per-location L3 switching.</p>
 
 <h2>Hardware Used</h2>
 <ul>
-<li>FortiGate Next-Generation Firewall (routing between segments + security policies)</li>
-<li>3× L3 switches — one main switch per location (VLANs, dedicated ports)</li>
-<li>Segregated physical cabling per location + re-labelled patch panels</li>
+<li>FortiGate Next-Generation Firewall (routing between segments + security policies) — configured by us</li>
+<li>3× L3 switches — one main switch per location, added by us (VLANs, dedicated ports)</li>
+<li>Fiber backbone between locations + splicing and fiber-to-ethernet media converters at endpoints — pre-existing, left unchanged</li>
+<li>Segregated cabling per location + re-labelled patch panels</li>
 <li>Wireless access points per location, printers and machinery on static IPs</li>
 </ul>
 
-<h2>What I actually did</h2>
-<p><strong>Lab first (2 days):</strong> designed the segmentation, built it on a lab setup, planned the cutover order, and tested routing, policies, and failover behavior before touching anything live. <strong>Location 1:</strong> deployed VLAN 20 — configured the L3 switch, FortiGate routing and policies, access points, and static IPs for printers and machinery — then watched it for a full day for faults and load issues while Locations 2 and 3 stayed on the previous network, unaffected. <strong>Location 2:</strong> same cutover to VLAN 30, another day of watching for errors and load. <strong>Location 3:</strong> same cutover to VLAN 40. After the last watch period with zero issues, all three locations were on segmented, isolated networks.</p>
+<h2>What we actually did</h2>
+<p><strong>Lab first (2 days):</strong> together with my Senior IT Engineer, I designed the segmentation, built it on a lab setup, planned the cutover order, and tested routing, policies, and failover behavior before touching anything live. <strong>Location A:</strong> we deployed VLAN 20 — configured the L3 switch, FortiGate routing and policies, access points, and static IPs for printers and machinery — then watched it for a full day for faults and load issues while Locations B and C stayed on the previous network, unaffected. <strong>Location B:</strong> same cutover to VLAN 30, another day of watching for errors and load. <strong>Location C:</strong> same cutover to VLAN 40. After the last watch period with zero issues, all three locations were on segmented, isolated networks. The fiber plant and media converters were never touched — only the firewall side and the new L3 switches changed.</p>
 
 <h2>Results</h2>
 <ul>
 <li>Broadcast congestion gone — each location is its own quiet domain.</li>
-<li>A fault in one location stays in that location instead of taking down the compound.</li>
+<li>A fault in one location stays in that location instead of taking down the campus.</li>
 <li>Stable, secure, and fast: granular traffic control plus no cross-segment lateral movement.</li>
 <li>Documentation: one-page VLAN + IP sheet per location. Future-me says thanks.</li>
 </ul>
