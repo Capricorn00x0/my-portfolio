@@ -11,7 +11,7 @@
 
 <h2>The situation</h2>
 <p>A large compound with three main locations, A, B, and C, kilometers apart. Each location is self-contained: main office, staff accommodation, warehouse, and a working factory with its machinery — plus Wi-Fi access points, cameras, and printers. All of it sat on one flat network. Broadcast traffic and congestion made the whole thing unstable: a problem in one location was everybody's problem.</p>
-<p>My Senior IT Engineer and I took this on together: split the compound into isolated segments so each location stands on its own — without breaking the locations still running on the old network during the rollout. Lab tested first, because a live compound does not forgive guesswork.</p>
+<p>We took this on together: split the compound into isolated segments so each location stands on its own — without breaking the locations still running on the old network during the rollout. Lab tested first, because a live compound does not forgive guesswork.</p>
 
 <h2>Network Topology</h2>
 <pre class="topo">[FortiGate NGFW — routing + firewall policies]
@@ -38,7 +38,7 @@
 </ul>
 
 <h2>What we actually did</h2>
-<p><strong>Lab first (2 days):</strong> together with my Senior IT Engineer, I designed the segmentation, built it on a lab setup, planned the cutover order, and tested routing, policies, and failover behavior before touching anything live. <strong>Location A:</strong> we deployed VLAN 20 — configured the L3 switch, FortiGate routing and policies, access points, and static IPs for printers and machinery — then watched it for a full day for faults and load issues while Locations B and C stayed on the previous network, unaffected. <strong>Location B:</strong> same cutover to VLAN 30, another day of watching for errors and load. <strong>Location C:</strong> same cutover to VLAN 40. After the last watch period with zero issues, all three locations were on segmented, isolated networks. The fiber plant and media converters were never touched — only the firewall side and the new L3 switches changed.</p>
+<p><strong>Lab first (2 days):</strong> we designed the segmentation, built it on a lab setup, planned the cutover order, and tested routing, policies, and failover behavior before touching anything live. <strong>Location A:</strong> we deployed VLAN 20 — configured the L3 switch, FortiGate routing and policies, access points, and static IPs for printers and machinery — then watched it for a full day for faults and load issues while Locations B and C stayed on the previous network, unaffected. <strong>Location B:</strong> same cutover to VLAN 30, another day of watching for errors and load. <strong>Location C:</strong> same cutover to VLAN 40. After the last watch period with zero issues, all three locations were on segmented, isolated networks. The fiber plant and media converters were never touched — only the firewall side and the new L3 switches changed.</p>
 
 <h2>Results</h2>
 <ul>
