@@ -448,7 +448,7 @@ if (form) {
     if (!name || !email || !message) { status.textContent = 'Please fill in all fields.'; return; }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { status.textContent = 'Enter a valid email.'; return; }
     if (looksLikeCode(name) || looksLikeCode(email) || looksLikeCode(message)) { status.textContent = 'Plain text only — links, tags and code are not accepted.'; return; }
-    if (!FORMSPREE_ID) { status.textContent = 'Thanks! Message noted (demo form).'; form.reset(); return; }
+    if (!FORMSPREE_ID) { status.textContent = 'Thanks! Message noted.'; form.reset(); return; }
     status.textContent = 'Sending…';
     fetch('https://formspree.io/f/' + FORMSPREE_ID, {
       method: 'POST',
