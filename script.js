@@ -368,18 +368,15 @@ if (isHome) {
 })();
 
 // Always land on top after (re)load — never resume mid-page.
-// Exception: an explicit #hash target (e.g. contact.html -> index.html#section-contact),
-// and only on a fresh navigation — a reload always goes back to the top.
+// Exception: an explicit #hash target (e.g. contact.html -> index.html#section-contact).
+// One-shot: the hash is stripped right after the jump, so any later refresh goes to the top.
 try { if (typeof history !== 'undefined' && 'scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (_) {}
-function isReload() {
-  try {
-    const nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')) || [];
-    return !!nav[0] && nav[0].type === 'reload';
-  } catch (_) { return false; }
-}
+let landed = false;
 function jumpToHash() {
+  if (landed) return; // runs at parse time and again on load — only the first call acts
+  landed = true;
   try {
-    const id = isReload() ? '' : decodeURIComponent((location.hash || '').replace(/^#/, ''));
+    const id = decodeURIComponent((location.hash || '').replace(/^#/, ''));
     const el = id ? document.getElementById(id) : null;
     if (el) {
       el.classList.add('visible');
