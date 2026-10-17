@@ -44,17 +44,34 @@ if (termInput && termOutput) {
 
   // Site themes — the palette lives in styles.css as html[data-theme="…"] rules.
   // Fixed allowlist only: no arbitrary CSS, nothing executable.
+  // A chosen colour is temporary: theme.js drops it once the visitor has been
+  // away for THEME_TTL_MS, and "color green" clears it immediately.
   const THEMES = ['green', 'amber', 'cyan', 'red', 'pink', 'white'];
+  const THEME_TTL_MS = 10 * 60 * 1000;
+  const clearTheme = () => {
+    try { localStorage.removeItem('termColor'); localStorage.removeItem('termColorUntil'); } catch (_) {}
+  };
+  const themeAlive = (name) => {
+    try {
+      return !!name && name !== 'green' && THEMES.indexOf(name) !== -1 &&
+        Date.now() < parseInt(localStorage.getItem('termColorUntil') || '0', 10);
+    } catch (_) { return false; }
+  };
   const accentHex = () => getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#33d17a';
   const applyColor = (name) => {
     if (THEMES.indexOf(name) === -1) return false;
     document.documentElement.setAttribute('data-theme', name);
     const hex = accentHex();
     [termOutput, gameScreen, termInput].forEach((el) => { if (el) el.style.color = hex; });
-    try { localStorage.setItem('termColor', name); } catch (_) {}
+    if (name === 'green') { clearTheme(); return true; }
+    try {
+      localStorage.setItem('termColor', name);
+      localStorage.setItem('termColorUntil', String(Date.now() + THEME_TTL_MS));
+    } catch (_) {}
     return true;
   };
-  try { const saved = localStorage.getItem('termColor'); if (saved && THEMES.indexOf(saved) !== -1) applyColor(saved); } catch (_) {}
+  const savedTheme = (() => { try { return localStorage.getItem('termColor'); } catch (_) { return null; } })();
+  if (themeAlive(savedTheme)) applyColor(savedTheme); else if (savedTheme) clearTheme();
 
   // Focus rules: keys drive the game only while the terminal has focus.
   // Click outside → website behaves normally (game state kept).
@@ -304,8 +321,10 @@ if (termInput && termOutput) {
     if (blocked.test(cmd)) { termOutput.textContent += '\n$ ---\nignored — plain commands only (try help)'; return; }
     if (cmd === 'color' || cmd.indexOf('color ') === 0) {
       const name = cmd.slice(6).trim();
-      if (!name) { say('$ color\nUsage: color green|amber|cyan|red|pink|white\nChanges the whole site — saved for your next visit.'); return; }
-      if (applyColor(name)) say('Site theme: ' + name + ' — saved. "color green" puts it back.');
+      if (!name) { say('$ color\nUsage: color green|amber|cyan|red|pink|white\nChanges the whole site for a while — it returns to green after 10 minutes away.'); return; }
+      if (applyColor(name)) say(name === 'green'
+        ? 'Site theme: green — back to default.'
+        : 'Site theme: ' + name + ' — returns to green after 10 minutes away.');
       else say('Unknown theme. Try: color green|amber|cyan|red|pink|white');
       return;
     }
