@@ -52,6 +52,11 @@ a { color: var(--accent2); }
 .term-input-row span { color: var(--accent); }
 #termInput { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font: inherit; }
 .contact-form { display: grid; gap: .8rem; max-width: 640px; }
+.contact-info { display: grid; gap: .6rem; margin: 1rem 0 1.5rem; }
+.contact-item { display: flex; align-items: center; gap: .6rem; color: var(--muted); }
+.ci-icon { flex: none; width: 20px; height: 20px; color: var(--accent); }
+.contact-item a { color: var(--text); text-decoration: none; border-bottom: 1px solid var(--border); }
+.contact-item a:hover { color: var(--accent); border-bottom-color: var(--accent); }
 .contact-form input, .contact-form textarea { background: #05090d; border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); padding: .7rem .9rem; font: inherit; width: 100%; }
 .form-status { color: var(--accent); min-height: 1.4em; }
 .footer { border-top: 1px solid var(--border); padding: 1.5rem 0; color: var(--muted); font-size: .85rem; margin-top: 2rem; }

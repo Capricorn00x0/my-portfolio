@@ -100,13 +100,22 @@
 <p>What I’m doing and learning right now.</p>
 <p><a class="read-more" href="now.html">Continue to page →</a></p>
 </article>
-<article class="card" id="section-contact">
-<p class="muted">~/contact</p>
-<h3>Contact</h3>
-<p>Email, LinkedIn/GitHub, and a message form.</p>
-<p><a class="read-more" href="contact.html">Continue to page →</a></p>
-</article>
 </div>
+</section>
+<section id="section-contact" class="section reveal">
+<h2 class="section-title">~/contact</h2>
+<div class="contact-info">
+<p class="contact-item"><svg class="ci-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg><span>Kerala, India</span></p>
+<p class="contact-item"><svg class="ci-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2" /><path d="m2 7 10 6 10-6" /></svg><a href="mailto:fahimep3@gmail.com">fahimep3@gmail.com</a></p>
+<p class="contact-item"><svg class="ci-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.4c0-1.3-.02-2.95-1.8-2.95-1.8 0-2.07 1.4-2.07 2.85V21H9z" /></svg><a href="https://www.linkedin.com/in/mohammed-fahim-/" target="_blank" rel="noopener">linkedin.com/in/mohammed-fahim-</a></p>
+</div>
+<form id="contactForm" class="contact-form" novalidate>
+<input type="text" id="name" placeholder="Your Name" required maxlength="80" autocomplete="name" />
+<input type="email" id="email" placeholder="Your Email" required maxlength="120" autocomplete="email" />
+<textarea id="message" rows="5" placeholder="Your Message" required maxlength="2000"></textarea>
+<button type="submit" class="btn btn-primary">Send Message</button>
+<p class="form-status" id="formStatus"></p>
+</form>
 </section>
 <section class="terminal">
 <div class="term-head">guest@fahim-node — type `help`</div>

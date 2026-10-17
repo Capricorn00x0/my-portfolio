@@ -368,9 +368,18 @@ if (isHome) {
 })();
 
 // Always land on top after (re)load — never resume mid-page.
+// Exception: an explicit #hash target (e.g. contact.html -> index.html#section-contact).
 try { if (typeof history !== 'undefined' && 'scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (_) {}
-try { window.scrollTo(0, 0); } catch (_) {}
-if (typeof window !== 'undefined' && window.addEventListener) window.addEventListener('load', () => { try { window.scrollTo(0, 0); } catch (_) {} });
+function jumpToHash() {
+  try {
+    const id = decodeURIComponent((location.hash || '').replace(/^#/, ''));
+    const el = id ? document.getElementById(id) : null;
+    if (el) { el.classList.add('visible'); el.scrollIntoView({ block: 'start' }); return; }
+    window.scrollTo(0, 0);
+  } catch (_) {}
+}
+jumpToHash();
+if (typeof window !== 'undefined' && window.addEventListener) window.addEventListener('load', jumpToHash);
 
 // Scroll reveal for home cards/sections
 (function () {
