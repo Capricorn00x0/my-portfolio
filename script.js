@@ -22,7 +22,7 @@ const routes = {
   games: 'Pick one: guess (1-100) · ttt (tic-tac-toe) · snake (WASD) · pacman (maze). Type the name, press any key, quit to stop.',
   resume: '→ resume.pdf (add your PDF later)',
 };
-const pageFor = { about: 'about.html', work: 'work.html', blog: 'blog.html', guides: 'guides.html', uses: 'uses.html', now: 'now.html', contact: 'contact.html' };
+const pageFor = { about: 'about.html', work: 'work.html', blog: 'blog.html', guides: 'guides.html', uses: 'uses.html', now: 'now.html', contact: 'index.html#section-contact' };
 
 if (termInput && termOutput) {
   // Plain-text only: never HTML, never eval. Script-like input is ignored.
@@ -315,7 +315,7 @@ if (termInput && termOutput) {
     termOutput.textContent += `\n$ ${cmd}\n${msg}`;
     termOutput.scrollTop = termOutput.scrollHeight;
     if (pageFor[cmd]) setTimeout(() => {
-      const target = isHome ? homeSectionFor[pageFor[cmd]] : null;
+      const target = isHome ? sectionForHref(pageFor[cmd]) : null;
       if (target && scrollToSection(target)) return;
       window.location.href = pageFor[cmd];
     }, 600);
@@ -326,6 +326,12 @@ if (termInput && termOutput) {
 // Read more / Continue links (.read-more) still open the full page.
 const homeSectionFor = { 'index.html': 'top', 'about.html': 'section-about', 'work.html': 'section-work', 'blog.html': 'section-blog', 'guides.html': 'section-guides', 'uses.html': 'section-uses', 'now.html': 'section-now', 'contact.html': 'section-contact' };
 const isHome = !!document.getElementById('section-pages');
+// Both "contact.html" and "index.html#section-contact" mean the same on-page section.
+function sectionForHref(href) {
+  if (!href) return null;
+  if (href.indexOf('index.html#') === 0) return decodeURIComponent(href.slice('index.html#'.length));
+  return homeSectionFor[href] || null;
+}
 function scrollToSection(id) {
   if (id === 'top') { window.scrollTo({ top: 0, behavior: 'smooth' }); return true; }
   const el = document.getElementById(id);
@@ -339,9 +345,10 @@ if (isHome) {
     const a = e.target.closest('a[href]');
     if (!a || a.classList.contains('read-more')) return;
     const href = a.getAttribute('href');
-    if (!href || !href.endsWith('.html')) return;
-    const target = homeSectionFor[href];
+    const target = sectionForHref(href);
     if (!target) return;
+    // Unknown anchor → let the browser handle the link instead of swallowing the click.
+    if (target !== 'top' && !document.getElementById(target)) return;
     if (a.target === '_blank' || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
     e.stopImmediatePropagation();
