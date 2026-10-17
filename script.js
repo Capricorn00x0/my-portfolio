@@ -10,7 +10,7 @@ if (hamburger && navLinks) {
 const termInput = document.getElementById('termInput');
 const termOutput = document.getElementById('termOutput');
 const routes = {
-  help: 'Available: home, work, about, blog, guides, uses, now, contact, games, color, resume, clear',
+  help: 'Available: home, work, about, blog, guides, uses, now, contact, whoami, games, color, resume, clear',
   home: '→ ~/home (you are here on index.html)',
   work: '→ opening ~/work ...',
   about: '→ opening ~/about ...',
@@ -19,6 +19,7 @@ const routes = {
   uses: '→ opening ~/uses ...',
   now: '→ opening ~/now ...',
   contact: '→ opening ~/contact ...',
+  whoami: 'Mohammed Fahim — Network Support & IT Infrastructure Engineer\nMuscat, Oman · open to work\n\n"The person you call when the internet stops working."\n"...and yes, I already tried turning it off and on again."\n\nEmail:    fahimep3@gmail.com\nLinkedIn: linkedin.com/in/mohammed-fahim-',
   games: 'Pick one: guess (1-100) · ttt (tic-tac-toe) · snake (WASD) · pacman (maze). Type the name, press any key, quit to stop.',
   resume: '→ resume.pdf (add your PDF later)',
 };
