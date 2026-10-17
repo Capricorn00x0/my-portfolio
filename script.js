@@ -42,16 +42,19 @@ if (termInput && termOutput) {
     histIdx = -1;
   };
 
-  // Terminal themes: fixed allowlist only — no arbitrary CSS, nothing executable.
-  const COLORS = { green: '#33d17a', amber: '#ffb86b', cyan: '#4cc9f0', red: '#ff5d5d', pink: '#f471b5', white: '#d6e2ec' };
+  // Site themes — the palette lives in styles.css as html[data-theme="…"] rules.
+  // Fixed allowlist only: no arbitrary CSS, nothing executable.
+  const THEMES = ['green', 'amber', 'cyan', 'red', 'pink', 'white'];
+  const accentHex = () => getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#33d17a';
   const applyColor = (name) => {
-    const hex = COLORS[name];
-    if (!hex) return false;
+    if (THEMES.indexOf(name) === -1) return false;
+    document.documentElement.setAttribute('data-theme', name);
+    const hex = accentHex();
     [termOutput, gameScreen, termInput].forEach((el) => { if (el) el.style.color = hex; });
     try { localStorage.setItem('termColor', name); } catch (_) {}
     return true;
   };
-  try { const saved = localStorage.getItem('termColor'); if (saved && COLORS[saved]) applyColor(saved); } catch (_) {}
+  try { const saved = localStorage.getItem('termColor'); if (saved && THEMES.indexOf(saved) !== -1) applyColor(saved); } catch (_) {}
 
   // Focus rules: keys drive the game only while the terminal has focus.
   // Click outside → website behaves normally (game state kept).
@@ -301,8 +304,8 @@ if (termInput && termOutput) {
     if (blocked.test(cmd)) { termOutput.textContent += '\n$ ---\nignored — plain commands only (try help)'; return; }
     if (cmd === 'color' || cmd.indexOf('color ') === 0) {
       const name = cmd.slice(6).trim();
-      if (!name) { say('$ color\nUsage: color green|amber|cyan|red|pink|white'); return; }
-      if (applyColor(name)) say('Theme set: ' + name + '.');
+      if (!name) { say('$ color\nUsage: color green|amber|cyan|red|pink|white\nChanges the whole site — saved for your next visit.'); return; }
+      if (applyColor(name)) say('Site theme: ' + name + ' — saved. "color green" puts it back.');
       else say('Unknown theme. Try: color green|amber|cyan|red|pink|white');
       return;
     }
