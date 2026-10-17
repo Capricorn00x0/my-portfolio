@@ -115,6 +115,8 @@ body.leaving { opacity: 0; }
   body { animation: none; }
   .reveal { opacity: 1; transform: none; transition: none; }
   .metric, .card, .read-more { transition: none; }
+  .net-packet, .net-pulse { display: none; }
+  .net-blocks { transition: none; }
 }
 
 /* Boot overlay */
@@ -128,3 +130,37 @@ body.leaving { opacity: 0; }
 .subnet-select { padding: .6rem; background: #05090d; border: 1px solid var(--border); border-radius: 8px; color: var(--text); font: inherit; }
 .subnet-out { margin-top: 1rem; }
 .subnet-split { overflow-x: auto; }
+
+/* Network topology diagram (external CSS: CSP style-src 'self' blocks inline styles) */
+.net-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin: .5rem 0 .6rem; }
+.net-head .btn { margin-right: 0; }
+.net-scroll { overflow-x: auto; }
+.net-svg { display: block; width: 100%; min-width: 700px; height: auto; background: #05090d; border: 1px solid var(--border); border-radius: var(--radius); }
+.net-text { fill: var(--text); font-size: 15px; }
+.net-site-head { fill: var(--text); font-size: 15px; }
+.net-label { fill: var(--muted); font-size: 13px; }
+.net-sub { fill: var(--muted); font-size: 11px; }
+.net-node { fill: var(--panel); stroke: var(--border); stroke-width: 1.5; }
+.net-node-head { fill: var(--text); font-size: 16px; }
+.net-chip { fill: #05090d; stroke: var(--border); stroke-width: 1; }
+.net-site-box { fill: none; stroke: var(--border); stroke-width: 1.5; stroke-dasharray: 6 4; }
+.net-rail { stroke: var(--accent); stroke-width: 2.5; }
+.net-drop { stroke: var(--border); stroke-width: 2; }
+.net-site { cursor: pointer; }
+.net-site:focus { outline: none; }
+.net-site:focus .net-site-box, .net-site:hover .net-site-box { stroke: var(--accent); stroke-dasharray: none; }
+.net-site:focus .net-site-head, .net-site:hover .net-site-head { fill: var(--accent); }
+.net-site:focus .net-chip, .net-site:hover .net-chip { stroke: var(--accent); }
+.net-fw:focus .net-node, .net-fw:hover .net-node { stroke: var(--accent); }
+.net-fw:focus .net-node-head, .net-fw:hover .net-node-head { fill: var(--accent); }
+.net-packet { fill: var(--accent); animation: netRun 5s linear infinite; }
+.net-pulse { fill: var(--accent); opacity: .7; animation: netDrop 2.4s ease-in-out infinite; }
+.net-pulse.d2 { animation-delay: .8s; }
+.net-pulse.d3 { animation-delay: 1.6s; }
+@keyframes netRun { from { transform: translateX(110px); } to { transform: translateX(850px); } }
+@keyframes netDrop { 0%, 100% { transform: translateY(0); opacity: .12; } 50% { transform: translateY(92px); opacity: .85; } }
+.net-blocks { opacity: 0; transition: opacity .3s ease; }
+.net-svg[data-iso="on"] .net-blocks { opacity: 1; }
+.net-iso-ring { fill: none; stroke: #ff6b6b; stroke-width: 2.5; stroke-dasharray: 4 5; }
+.net-iso-label { fill: #ff6b6b; font-size: 15px; }
+.net-detail { background: #05090d; border: 1px solid var(--border); border-radius: var(--radius); padding: .75rem .9rem; margin-top: .75rem; white-space: pre-wrap; min-height: 4.5em; color: var(--text); font-size: .92rem; }

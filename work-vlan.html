@@ -14,6 +14,96 @@
 <p>We took this on together: split the compound into isolated segments so each location stands on its own — without breaking the locations still running on the old network during the rollout. Lab tested first, because a live compound does not forgive guesswork.</p>
 
 <h2>Network Topology</h2>
+<div class="net-head">
+<span class="muted">Hover to highlight · click a location for detail</span>
+<button class="btn btn-outline" id="netIso" type="button" aria-pressed="false">Show isolation</button>
+</div>
+<div class="net-scroll">
+<svg id="netSvg" class="net-svg" data-iso="off" viewBox="0 0 960 520" role="img" aria-labelledby="netTitle netDesc">
+<title id="netTitle">Three-site compound network with three isolated VLANs</title>
+<desc id="netDesc">A FortiGate NGFW connects over a fibre backbone to three locations. Location A is VLAN 20, Location B is VLAN 30 and Location C is VLAN 40. Each location has one L3 switch serving office PCs, Wi-Fi access points, cameras, printers and machinery. The fibre plant and media converters are pre-existing and were left unchanged. The three VLANs are fully isolated from each other.</desc>
+
+<g class="net-links">
+<line class="net-rail" x1="100" y1="150" x2="860" y2="150"/>
+<line class="net-drop" x1="480" y1="118" x2="480" y2="150"/>
+<line class="net-drop" x1="170" y1="150" x2="170" y2="250"/>
+<line class="net-drop" x1="480" y1="150" x2="480" y2="250"/>
+<line class="net-drop" x1="790" y1="150" x2="790" y2="250"/>
+</g>
+<text class="net-label" x="104" y="138">fibre backbone — pre-existing, untouched</text>
+
+<g class="net-site net-fw" data-net="fw" tabindex="0" role="button" aria-label="FortiGate NGFW">
+<rect class="net-node" x="380" y="46" width="200" height="72" rx="8"/>
+<text class="net-node-head" x="480" y="76" text-anchor="middle">FortiGate NGFW</text>
+<text class="net-sub" x="480" y="96" text-anchor="middle">routing + firewall policies</text>
+</g>
+
+<g class="net-site" data-net="a" tabindex="0" role="button" aria-label="Location A, VLAN 20">
+<rect class="net-site-box" x="30" y="205" width="280" height="200" rx="10"/>
+<text class="net-site-head" x="170" y="232" text-anchor="middle">LOCATION A · VLAN 20</text>
+<rect class="net-node" x="80" y="250" width="180" height="44" rx="6"/>
+<text class="net-text" x="170" y="278" text-anchor="middle">L3 Switch</text>
+<rect class="net-chip" x="38" y="310" width="80" height="34" rx="6"/>
+<text class="net-text" x="78" y="332" text-anchor="middle">PCs</text>
+<rect class="net-chip" x="130" y="310" width="80" height="34" rx="6"/>
+<text class="net-text" x="170" y="332" text-anchor="middle">APs</text>
+<rect class="net-chip" x="222" y="310" width="80" height="34" rx="6"/>
+<text class="net-text" x="262" y="332" text-anchor="middle">Cameras</text>
+<rect class="net-chip" x="38" y="354" width="126" height="34" rx="6"/>
+<text class="net-text" x="101" y="376" text-anchor="middle">Printers</text>
+<rect class="net-chip" x="176" y="354" width="126" height="34" rx="6"/>
+<text class="net-text" x="239" y="376" text-anchor="middle">Machinery</text>
+</g>
+
+<g class="net-site" data-net="b" tabindex="0" role="button" aria-label="Location B, VLAN 30">
+<rect class="net-site-box" x="340" y="205" width="280" height="200" rx="10"/>
+<text class="net-site-head" x="480" y="232" text-anchor="middle">LOCATION B · VLAN 30</text>
+<rect class="net-node" x="390" y="250" width="180" height="44" rx="6"/>
+<text class="net-text" x="480" y="278" text-anchor="middle">L3 Switch</text>
+<rect class="net-chip" x="348" y="310" width="80" height="34" rx="6"/>
+<text class="net-text" x="388" y="332" text-anchor="middle">PCs</text>
+<rect class="net-chip" x="440" y="310" width="80" height="34" rx="6"/>
+<text class="net-text" x="480" y="332" text-anchor="middle">APs</text>
+<rect class="net-chip" x="532" y="310" width="80" height="34" rx="6"/>
+<text class="net-text" x="572" y="332" text-anchor="middle">Cameras</text>
+<rect class="net-chip" x="348" y="354" width="126" height="34" rx="6"/>
+<text class="net-text" x="411" y="376" text-anchor="middle">Printers</text>
+<rect class="net-chip" x="486" y="354" width="126" height="34" rx="6"/>
+<text class="net-text" x="549" y="376" text-anchor="middle">Machinery</text>
+</g>
+
+<g class="net-site" data-net="c" tabindex="0" role="button" aria-label="Location C, VLAN 40">
+<rect class="net-site-box" x="650" y="205" width="280" height="200" rx="10"/>
+<text class="net-site-head" x="790" y="232" text-anchor="middle">LOCATION C · VLAN 40</text>
+<rect class="net-node" x="700" y="250" width="180" height="44" rx="6"/>
+<text class="net-text" x="790" y="278" text-anchor="middle">L3 Switch</text>
+<rect class="net-chip" x="658" y="310" width="80" height="34" rx="6"/>
+<text class="net-text" x="698" y="332" text-anchor="middle">PCs</text>
+<rect class="net-chip" x="750" y="310" width="80" height="34" rx="6"/>
+<text class="net-text" x="790" y="332" text-anchor="middle">APs</text>
+<rect class="net-chip" x="842" y="310" width="80" height="34" rx="6"/>
+<text class="net-text" x="882" y="332" text-anchor="middle">Cameras</text>
+<rect class="net-chip" x="658" y="354" width="126" height="34" rx="6"/>
+<text class="net-text" x="721" y="376" text-anchor="middle">Printers</text>
+<rect class="net-chip" x="796" y="354" width="126" height="34" rx="6"/>
+<text class="net-text" x="859" y="376" text-anchor="middle">Machinery</text>
+</g>
+
+<g class="net-blocks" aria-hidden="true">
+<rect class="net-iso-ring" x="23" y="198" width="294" height="214" rx="12"/>
+<rect class="net-iso-ring" x="333" y="198" width="294" height="214" rx="12"/>
+<rect class="net-iso-ring" x="643" y="198" width="294" height="214" rx="12"/>
+<text class="net-iso-label" x="480" y="470" text-anchor="middle">Isolation ON — no traffic between VLAN 20, 30 and 40</text>
+</g>
+
+<circle class="net-packet" cx="0" cy="150" r="6"/>
+<circle class="net-pulse" cx="170" cy="155" r="4.5"/>
+<circle class="net-pulse d2" cx="480" cy="155" r="4.5"/>
+<circle class="net-pulse d3" cx="790" cy="155" r="4.5"/>
+</svg>
+</div>
+<div class="net-detail" id="netDetail">Click a location (or tab to one and press Enter) for what is inside it.</div>
+<p class="muted">Text version, for copy/paste:</p>
 <pre class="topo">[FortiGate NGFW — routing + firewall policies]
     |-- fiber backbone (pre-existing, unchanged, km apart)
     |-- Location A (VLAN 20) -- [media converter, pre-existing] -- [L3 Switch] -- office PCs, APs, cameras, printers, machinery
@@ -50,4 +140,5 @@
 <p><a href="work.html">← Back to ~/work</a></p>
 </main>
 <footer class="footer"><div class="container"><span>© 2026 Mohammed Fahim</span><span>~/work/segmentation</span></div></footer>
-<script src="script.js"></script></body></html>
+<script src="script.js"></script>
+<script src="topology.js"></script></body></html>
