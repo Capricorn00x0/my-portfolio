@@ -52,7 +52,11 @@ a { color: var(--accent2); }
 .metric:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 8px 24px rgba(var(--accent-rgb), .12); }
 .metric strong { display: block; color: var(--accent); font-size: 1.2rem; }
 .metric span { color: var(--muted); font-size: .9rem; }
-.section { padding: 2.5rem 0; }
+/* Vertical spacing only. Must NOT be the `padding: X 0` shorthand: this class
+   also sits on <main> right next to .container, and the shorthand would wipe the
+   container's side padding, pushing text and tiles to the screen edge on mobile.
+   Longhands leave padding-left/right alone so .container's gutter survives. */
+.section { padding-top: 2.5rem; padding-bottom: 2.5rem; }
 .section-title { color: var(--accent); margin-bottom: 1.25rem; font-size: 1.4rem; }
 .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
 .card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease; scroll-margin-top: 80px; }
