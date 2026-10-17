@@ -321,10 +321,10 @@ if (termInput && termOutput) {
     if (blocked.test(cmd)) { termOutput.textContent += '\n$ ---\nignored — plain commands only (try help)'; return; }
     if (cmd === 'color' || cmd.indexOf('color ') === 0) {
       const name = cmd.slice(6).trim();
-      if (!name) { say('$ color\nUsage: color green|amber|cyan|red|pink|white\nChanges the whole site for a while — it returns to green after 10 minutes away.'); return; }
+      if (!name) { say('$ color\nUsage: color green|amber|cyan|red|pink|white\nEach colour lasts 10 minutes.'); return; }
       if (applyColor(name)) say(name === 'green'
         ? 'Site theme: green — back to default.'
-        : 'Site theme: ' + name + ' — returns to green after 10 minutes away.');
+        : 'Site theme: ' + name + ' — set for 10 minutes.');
       else say('Unknown theme. Try: color green|amber|cyan|red|pink|white');
       return;
     }
