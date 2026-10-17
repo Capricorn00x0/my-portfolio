@@ -368,13 +368,26 @@ if (isHome) {
 })();
 
 // Always land on top after (re)load — never resume mid-page.
-// Exception: an explicit #hash target (e.g. contact.html -> index.html#section-contact).
+// Exception: an explicit #hash target (e.g. contact.html -> index.html#section-contact),
+// and only on a fresh navigation — a reload always goes back to the top.
 try { if (typeof history !== 'undefined' && 'scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (_) {}
+function isReload() {
+  try {
+    const nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')) || [];
+    return !!nav[0] && nav[0].type === 'reload';
+  } catch (_) { return false; }
+}
 function jumpToHash() {
   try {
-    const id = decodeURIComponent((location.hash || '').replace(/^#/, ''));
+    const id = isReload() ? '' : decodeURIComponent((location.hash || '').replace(/^#/, ''));
     const el = id ? document.getElementById(id) : null;
-    if (el) { el.classList.add('visible'); el.scrollIntoView({ block: 'start' }); return; }
+    if (el) {
+      el.classList.add('visible');
+      el.scrollIntoView({ block: 'start' });
+      // Drop the hash so a later refresh lands on top, not on the section.
+      try { history.replaceState(null, '', location.pathname + location.search); } catch (_) {}
+      return;
+    }
     window.scrollTo(0, 0);
   } catch (_) {}
 }
