@@ -23,6 +23,8 @@
    colour used on the filled primary button.
    --------------------------------------------------------------------------- */
 html[data-theme="amber"] { --accent: #ffb86b; --accent-rgb: 255, 184, 107; --accent-ink: #1b1204; }
+html[data-theme="yellow"] { --accent: #bcf11c; --accent-rgb: 188, 241, 28;  --accent-ink: #171f02; }
+html[data-theme="mint"]   { --accent: #00ff88; --accent-rgb: 0, 255, 136;   --accent-ink: #03170e; }
 html[data-theme="cyan"]  { --accent: #4cc9f0; --accent-rgb: 76, 201, 240;  --accent-ink: #04141c; }
 html[data-theme="red"]   { --accent: #ff5d5d; --accent-rgb: 255, 93, 93;   --accent-ink: #1c0404; }
 html[data-theme="pink"]  { --accent: #f471b5; --accent-rgb: 244, 113, 181; --accent-ink: #1c0413; }

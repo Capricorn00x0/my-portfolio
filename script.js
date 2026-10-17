@@ -46,7 +46,7 @@ if (termInput && termOutput) {
   // Fixed allowlist only: no arbitrary CSS, nothing executable.
   // A chosen colour is temporary: theme.js drops it once the visitor has been
   // away for THEME_TTL_MS, and "color green" clears it immediately.
-  const THEMES = ['green', 'amber', 'cyan', 'red', 'pink', 'white'];
+  const THEMES = ['green', 'amber', 'yellow', 'mint', 'cyan', 'red', 'pink', 'white'];
   const THEME_TTL_MS = 10 * 60 * 1000;
   const clearTheme = () => {
     try { localStorage.removeItem('termColor'); localStorage.removeItem('termColorUntil'); } catch (_) {}
@@ -321,11 +321,11 @@ if (termInput && termOutput) {
     if (blocked.test(cmd)) { termOutput.textContent += '\n$ ---\nignored — plain commands only (try help)'; return; }
     if (cmd === 'color' || cmd.indexOf('color ') === 0) {
       const name = cmd.slice(6).trim();
-      if (!name) { say('$ color\nUsage: color green|amber|cyan|red|pink|white\nEach colour lasts 10 minutes.'); return; }
+      if (!name) { say('$ color\nUsage: color green|amber|yellow|mint|cyan|red|pink|white\nEach colour lasts 10 minutes.\nExample: type "color yellow"'); return; }
       if (applyColor(name)) say(name === 'green'
         ? 'Site theme: green — back to default.'
         : 'Site theme: ' + name + ' — set for 10 minutes.');
-      else say('Unknown theme. Try: color green|amber|cyan|red|pink|white');
+      else say('Unknown theme. Try: color green|amber|yellow|mint|cyan|red|pink|white — e.g. type "color yellow"');
       return;
     }
     if (cmd === 'games' || cmd === 'game') { say('$ games\n' + routes.games); return; }

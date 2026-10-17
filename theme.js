@@ -7,7 +7,7 @@
 // Palette lives in styles.css; this only sets data-theme on <html>.
 // Allowlist only — no arbitrary values, nothing executable.
 (function () {
-  var THEMES = { green: 1, amber: 1, cyan: 1, red: 1, pink: 1, white: 1 };
+  var THEMES = { green: 1, amber: 1, yellow: 1, mint: 1, cyan: 1, red: 1, pink: 1, white: 1 };
   var TTL_MS = 10 * 60 * 1000; // how long a chosen colour survives after the last visit
   try {
     var name = localStorage.getItem('termColor');
